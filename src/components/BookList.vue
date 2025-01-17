@@ -8,7 +8,8 @@
           :title="book.title"
           :price="book.price"
           :author="book.author"
-          :availableStock="book.availableStock" />
+          :availableStock="book.availableStock"
+          :book="book" />
       </div>
     </div>
   </div>
