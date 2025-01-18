@@ -1,32 +1,53 @@
 <template>
-        <BookListCard 
-          :id="book.id"
-          :isbn13="book.isbn13"
-          :title="book.title"
-          :price="book.price"
-          :author="book.author"
-          :availableStock="book.availableStock"
-          :book="book" />
+  <div class="container border rounded-2">
+    <div class="row p-2">
+      <div class="col-12 text-bg-secondary rounded-2 mb-2">
+        <img style="height: 200px" />
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-12">
+        <h5 class="text-truncate">{{book.title}}</h5>
+        <h6>{{book.author}}</h6>
+      </div>
+    </div>
+
+    <div class="row my-2 justify-content-end align-items-center">
+      <div class="col-12 align-items-start">
+        <RouterLink
+          :to="`/books/${book.id}`"
+          book="{{book}}"
+          class="btn btn-primary shadow-sm position-relative"
+          v-if="available">
+        Buy Now
+          <span 
+            class="position-absolute top-0 start-95 translate-middle badge text-bg-danger"
+            v-if="book.availableStock < 10 && book.availableStock > 0">
+              {{book.availableStock + 1}} Left!
+          </span>
+        </RouterLink>
+
+        <button class="btn btn-danger" type="button" disabled v-if="!available">Sold Out</button>
+      </div>
+    </div>
+  </div>
 </template>
 
 <script setup>
-import {ref, defineProps} from 'vue'
+import {defineProps, computed, ref} from 'vue'
 import {useBooksStore} from '@/stores/booksstore'
 
-const props = defineProps(['id'])
+const props = defineProps({
+  'id': String,
+})
 
 const book = ref({})
 const booksStore = useBooksStore()
 
-booksStore.fetchBook(props.id, (b) => {book.value = b})
-</script>
+// eslint-disable-next-line no-unused-vars
+const available = computed(() => {
+  return book.value.availableStock > 0
+})
 
-<script>
-import BookListCard from '../components/BookListCard.vue'
-
-export default {
-  components: {
-    BookListCard,
-  },
-}
+booksStore.fetchBook(props.id, (b) => { book.value = b })
 </script>

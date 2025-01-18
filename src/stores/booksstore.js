@@ -14,6 +14,12 @@ export const useBooksStore = defineStore('books', {
 			}
 		},
 		async fetchBook(id, fn) {
+			const existing = this.books.find((b) => { return b['id'] == id })
+
+			if(existing !== null) {
+				fn(existing)
+			}
+
 			const response = await fetch('http://localhost:8000/books/' + id)
 				.then((res) => res.json())
 
