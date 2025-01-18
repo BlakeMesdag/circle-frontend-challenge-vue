@@ -4,16 +4,15 @@
       <a class="navbar-brand">Sky High Books</a>
     </div>
   </nav>
-  <BookList />
+
+  <router-view />
 </template>
 
 <script>
-import BookList from './components/BookList.vue'
-
 export default {
   name: 'App',
   components: {
-    BookList,
+    // IndexView,
   }
 }
 </script>

@@ -1,7 +1,4 @@
 <template>
-  <div class="container pt-2">
-    <div class="row">
-      <div class="col-md-3 px-1 pb-2" v-for="book in books" :key="book.id">
         <BookListCard 
           :id="book.id"
           :isbn13="book.isbn13"
@@ -10,28 +7,28 @@
           :author="book.author"
           :availableStock="book.availableStock"
           :book="book" />
-      </div>
-    </div>
-  </div>
 </template>
 
 <script setup>
-import {ref} from 'vue'
+import {ref,watch} from 'vue'
+import {useRoute} from 'vue-router'
 
-const books = ref([])
+const route = useRoute()
 
-const fetchBooks = async () => {
-  const response = await fetch("http://localhost:8000/books")
+const book = ref({})
+
+const fetchBook = async (id) => {
+  const response = await fetch("http://localhost:8000/books/" + id)
     .then((res) => res.json() )
 
-  books.value = response.books
+  book.value = response.book
 }
 
-fetchBooks()
+watch(() => route.params.id, fetchBook, {immediate: true})
 </script>
 
 <script>
-import BookListCard from './BookListCard.vue'
+import BookListCard from '../components/BookListCard.vue'
 
 export default {
   components: {
