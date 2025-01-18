@@ -1,7 +1,7 @@
 <template>
   <div class="container pt-2">
     <div class="row">
-      <div class="col-md-3 px-1 pb-2" v-for="book in books" :key="book.id">
+      <div class="col-md-3 px-1 pb-2" v-for="book in store.books" :key="book.id">
         <BookListCard 
           :id="book.id"
           :isbn13="book.isbn13"
@@ -17,17 +17,12 @@
 
 <script setup>
 import {ref} from 'vue'
+import {useBooksStore} from '@/stores/booksstore'
 
 const books = ref([])
+const store = useBooksStore()
 
-const fetchBooks = async () => {
-  const response = await fetch("http://localhost:8000/books")
-    .then((res) => res.json() )
-
-  books.value = response.books
-}
-
-fetchBooks()
+store.fetchAllBooks(books)
 </script>
 
 <script>

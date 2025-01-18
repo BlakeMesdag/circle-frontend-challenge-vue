@@ -10,21 +10,15 @@
 </template>
 
 <script setup>
-import {ref,watch} from 'vue'
-import {useRoute} from 'vue-router'
+import {ref, defineProps} from 'vue'
+import {useBooksStore} from '@/stores/booksstore'
 
-const route = useRoute()
+const props = defineProps(['id'])
 
 const book = ref({})
+const booksStore = useBooksStore()
 
-const fetchBook = async (id) => {
-  const response = await fetch("http://localhost:8000/books/" + id)
-    .then((res) => res.json() )
-
-  book.value = response.book
-}
-
-watch(() => route.params.id, fetchBook, {immediate: true})
+booksStore.fetchBook(props.id, (b) => {book.value = b})
 </script>
 
 <script>

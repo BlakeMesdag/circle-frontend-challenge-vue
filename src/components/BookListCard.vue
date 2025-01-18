@@ -14,7 +14,11 @@
 
 		<div class="row my-2 justify-content-end align-items-center">
 			<div class="col-12 align-items-start">
-				<RouterLink :to="`/books/${book.id}`" class="btn btn-primary shadow-sm position-relative" type="button" v-if="available">
+				<RouterLink
+					:to="`/books/${book.id}`"
+					book="{{book}}"
+					class="btn btn-primary shadow-sm position-relative"
+					v-if="available">
 				Buy Now
 					<span 
 						class="position-absolute top-0 start-95 translate-middle badge text-bg-danger"

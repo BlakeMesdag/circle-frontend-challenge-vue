@@ -1,6 +1,7 @@
 import "bootstrap/dist/css/bootstrap.min.css"
 import "bootstrap"
 
+import { createPinia } from 'pinia'
 import { createApp } from 'vue'
 import {createWebHistory, createRouter} from 'vue-router'
 
@@ -23,10 +24,12 @@ const routes = [
 	{
 		path: '/books/:id',
 		component: App,
+		props: true,
 		children: [
 			{
 				path: '',
 				component: BookView,
+				props: true,
 			},
 		]
 	},
@@ -37,6 +40,9 @@ const router = createRouter({
 	routes,
 })
 
+const pinia = createPinia()
+
 createApp(App)
 	.use(router)
+	.use(pinia)
 	.mount('#app')
