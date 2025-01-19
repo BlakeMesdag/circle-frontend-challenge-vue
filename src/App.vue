@@ -1,17 +1,16 @@
 <template>
-  <nav class="navbar bg-body-tertiary fixed-top">
-    <div class="container-fluid">
-      <a class="navbar-brand">Sky High Books</a>
-    </div>
-  </nav>
+  <NavBar></NavBar>
 
-  <router-view />
+  <router-view></router-view>
 </template>
 
 <script>
+import NavBar from '@/components/NavBar.vue'
+
 export default {
   name: 'App',
   components: {
+    NavBar,
   }
 }
 </script>

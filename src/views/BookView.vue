@@ -33,10 +33,14 @@
 
 <script setup>
 import {defineProps, computed, ref} from 'vue'
-import {useBooksStore} from '@/stores/booksstore'
+import {useBooksStore} from '@/stores/BooksStore'
 
 const props = defineProps({
   'id': String,
+  'book': {
+    'type': Object,
+    'default': {},
+  }
 })
 
 const book = ref({})

@@ -10,7 +10,7 @@
 
 <script setup>
 import {ref} from 'vue'
-import {useBooksStore} from '@/stores/booksstore'
+import {useBooksStore} from '@/stores/BooksStore'
 
 const books = ref([])
 const store = useBooksStore()
@@ -19,7 +19,7 @@ store.fetchAllBooks(books)
 </script>
 
 <script>
-import BookListCard from '../components/BookListCard.vue'
+import BookListCard from '@/components/BookListCard.vue'
 
 export default {
   components: {
