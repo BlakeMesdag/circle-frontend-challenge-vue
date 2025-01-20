@@ -13,11 +13,14 @@
               <h5 class="text-truncate">{{book.title}}</h5>
               <h6>{{book.author}}</h6>
 
-              <span class="btn btn-primary shadow-sm position-relative">
-                Buy Now
-                <span
-                  class="position-absolute top-0 start-95 translate-middle badge text-bg-danger"
-                  v-if="book.availableStock < 10 && book.availableStock > 0">
+              <span class="btn btn-primary shadow-sm position-relative"
+                    @click="purchaseBook"
+                    v-if="available"
+                    :disabled="purchasing">
+                <span v-if="!purchasing">Buy Now</span>
+                <span v-if="purchasing" class="spinner-border text-light"></span>
+                <span class="position-absolute top-0 start-95 translate-middle badge text-bg-danger"
+                      v-if="book.availableStock < 10 && book.availableStock > 0">
                     {{book.availableStock + 1}} Left!
                 </span>
               </span>
@@ -40,16 +43,30 @@ const props = defineProps({
   'book': {
     'type': Object,
     'default': {},
-  }
+  },
+  'purchasing': Boolean,
 })
 
 const book = ref({})
 const booksStore = useBooksStore()
+const purchasing = ref(false)
 
 // eslint-disable-next-line no-unused-vars
 const available = computed(() => {
   return book.value.availableStock > 0
 })
+
+const purchaseBook = () => {
+  if(purchasing.value) { return }
+
+  purchasing.value = true
+
+  booksStore.purchaseBook(book.value.id, (b) => {
+    book.value = b
+  })
+
+  setTimeout(() => {purchasing.value = false}, 1000)
+}
 
 booksStore.fetchBook(props.id, (b) => { book.value = b })
 </script>
