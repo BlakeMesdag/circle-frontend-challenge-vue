@@ -7,23 +7,24 @@
 
       <div class="col-8">
         <div class="container" style="height: 100%">
-          <div class="col-12" style="height: 100%; display: table">
+          <div class="col-12 d-table" style="height: 100%;">
 
-            <div style="display: table-cell; vertical-align: middle;">
+            <div class="d-table-cell align-middle">
               <h5 class="text-truncate">{{book.title}}</h5>
               <h6>{{book.author}}</h6>
 
-              <span class="btn btn-primary shadow-sm position-relative"
-                    @click="purchaseBook"
-                    v-if="available"
-                    :disabled="purchasing">
-                <span v-if="!purchasing">Buy Now</span>
-                <span v-if="purchasing" class="spinner-border text-light"></span>
+              <button @click="purchaseBook" v-if="available" class="btn btn-primary shadow-sm position-relative" :disabled="purchasing">
+                <span :class="{'d-none': !purchasing}">
+                  <span class="spinner-border spinner-border-sm text-light" />
+                  Buying
+                </span>
+
+                <span :class="{'d-none': purchasing}">Buy Now</span>
                 <span class="position-absolute top-0 start-95 translate-middle badge text-bg-danger"
                       v-if="book.availableStock < 10 && book.availableStock > 0">
                     {{book.availableStock + 1}} Left!
                 </span>
-              </span>
+              </button>
 
               <button class="btn btn-danger" type="button" disabled v-if="!available">Sold Out</button>
             </div>
@@ -65,7 +66,7 @@ const purchaseBook = () => {
     book.value = b
   })
 
-  setTimeout(() => {purchasing.value = false}, 1000)
+  purchasing.value = false
 }
 
 booksStore.fetchBook(props.id, (b) => { book.value = b })
