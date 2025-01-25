@@ -1,9 +1,7 @@
 <template>
-  <div class="container pt-2">
-    <div class="row">
-      <div class="col-md-3 px-1 pb-2" v-for="book in store.books" :key="book.id">
-        <BookListCard :book="book" />
-      </div>
+  <div class="row row-cols-3 row-cols-md-3 g-4 m-1">
+    <div class="col" v-for="book in store.books" :key="book.id">
+      <BookListCard :book="book" />
     </div>
   </div>
 </template>

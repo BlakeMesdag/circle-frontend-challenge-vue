@@ -78,7 +78,9 @@ const purchaseBook = () => {
     book.value = b
   })
 
-  purchasing.value = false
+  setTimeout(() => {
+    purchasing.value = false
+  }, 500)
 }
 
 booksStore.fetchBook(props.id, (b) => { book.value = b })
