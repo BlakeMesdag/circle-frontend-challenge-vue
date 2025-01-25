@@ -19,7 +19,7 @@ export const useBooksStore = defineStore('books', {
 		async fetchBook(id, fn) {
 			const existing = this.books.find((b) => { return b['id'] == id })
 
-			if(existing !== null) {
+			if(existing) {
 				fn(existing)
 				return
 			}

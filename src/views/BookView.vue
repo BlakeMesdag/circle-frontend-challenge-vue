@@ -1,8 +1,9 @@
 <template>
-  <div v-if="book" class="container">
+<Transition name="fade" mode="out-in">
+  <div class="container border rounded-2" v-if="book.title">
     <div class="row p-2">
-      <div class="col-4 text-bg-secondary rounded-2 mb-2">
-        <img style="height: 200px" />
+      <div class="col-4 text-bg-secondary rounded-2">
+        <img style="min-height: 200px; height: 200px" />
       </div>
 
       <div class="col-8">
@@ -33,6 +34,17 @@
       </div>
     </div>
   </div>
+
+  <div v-else>
+    <div style="min-height: 200px; height: 200px">
+      <div class="container d-table" style="height: 100%">
+        <div class="d-table-cell align-middle" style="height: 100%">
+          <span class="spinner-border spinner-border-lg text-secondary"></span>
+        </div>
+      </div>
+    </div>
+  </div>
+</Transition>
 </template>
 
 <script setup>
