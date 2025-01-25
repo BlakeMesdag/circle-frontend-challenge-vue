@@ -21,6 +21,7 @@ export const useBooksStore = defineStore('books', {
 
 			if(existing !== null) {
 				fn(existing)
+				return
 			}
 
 			const response = await fetch(`${this.bookstoreBaseURI}/books/${id}`)
