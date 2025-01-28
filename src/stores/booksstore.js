@@ -1,10 +1,10 @@
 import {defineStore} from 'pinia'
-import {ref} from 'vue'
+import {ref, watch} from 'vue'
+import {BooksAPI} from '@/api/BooksAPI'
 
 export const useBooksStore = defineStore('books', () => {
-	
 	const books = ref([])
-	const bookstoreBaseURI = ref('http://localhost:8000')
+	const booksAPI = new BooksAPI('http://localhost:8000')
 
 	const cachedBooks = localStorage.getItem('books')
 
@@ -12,52 +12,56 @@ export const useBooksStore = defineStore('books', () => {
 		books.value = JSON.parse(cachedBooks)
 	}
 
-	const fetchAllBooks = async (fn) => {
-			const response = await fetch(`${bookstoreBaseURI.value}/books`)
-				.then((res) => res.json())
+	watch(books, (newBooks) => {
+		localStorage.setItem('books', JSON.stringify(newBooks))
+	})
 
-			// eslint-disable-next-line no-debugger
-			// debugger
-
-			books.value = response.books
-
-			if(typeof(fn) == 'function') {
-				fn(books.value)
-			}
+	const findExistingBook = (id) => {
+		if (!books.value) {
+			return null
 		}
-	const fetchBook = async (id, fn) => {
-			const existing = books.value.find((b) => { return b['id'] == id })
 
-			if(existing) {
-				fn(existing)
-				return
-			}
+		return books.value.find((b) => { return b['id'] == id })
+	}
 
-			const response = await fetch(`${bookstoreBaseURI.value}/books/${id}`)
-				.then((res) => res.json())
+	const fetchAllBooks = async () => {
+		const response = await booksAPI.fetchAllBooks()
 
-			if(typeof(fn) == 'function') {
-				fn(response.book)
-			}
+		books.value = response.books
+	}
+
+	const fetchBook = async (id) => {
+		const existing = findExistingBook(id)
+
+		if(existing) {
+			return existing
 		}
-	const purchaseBook = async (id, fn) => {
-			const response = await fetch(`${bookstoreBaseURI.value}/books/${id}/purchase`, {method: 'POST'})
 
-			if(!response.ok) {
-				console.log(`Purchase book failed! ${response.status}`)
-				return
+		const response = await booksAPI.fetchBook(id)
+
+		return response.book
+	}
+
+	const purchaseBook = async (id) => {
+		let response = null
+
+		try {
+			response = await booksAPI.purchaseBook(id)
+		} catch(err) {
+			if(err.name == "APIError") {
+				response = err.response
 			}
 
-			if(typeof(fn) == 'function') {
-				const json = await response.json()
+			console.log(`Purchase book failed! ${err.message}`)
 
-				fn(json.book)
-			}
+			return
 		}
+
+		return response.book
+	}
 
 	return {
 		books,
-		bookstoreBaseURI,
 		fetchAllBooks,
 		fetchBook,
 		purchaseBook,

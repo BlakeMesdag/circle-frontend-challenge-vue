@@ -74,14 +74,18 @@ const purchaseBook = () => {
 
   purchasing.value = true
 
-  booksStore.purchaseBook(book.value.id, (b) => {
-    book.value = b
-  })
+  booksStore.purchaseBook(book.value.id)
+    .then((b) => {
+      if(b) {
+        book.value = b
+      }
+    })
 
   setTimeout(() => {
     purchasing.value = false
   }, 500)
 }
 
-booksStore.fetchBook(props.id, (b) => { book.value = b })
+booksStore.fetchBook(props.id)
+  .then((b) => {book.value = b})
 </script>
