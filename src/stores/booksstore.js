@@ -12,9 +12,10 @@ export const useBooksStore = defineStore('books', () => {
 		books.value = JSON.parse(localStorage.getItem('books'))
 	}
 
-	watch(books, (newBooks) => {
+	const storeBooks = (newBooks) => {
 		localStorage.setItem('books', JSON.stringify(newBooks))
-	})
+	}
+	watch(books, storeBooks)
 
 	const findExistingBook = (id) => {
 		if (!books.value) {
@@ -29,6 +30,8 @@ export const useBooksStore = defineStore('books', () => {
 
 		books.value[idx] = book
 		currentBook.value = book
+
+		storeBooks(books.value)
 	}
 
 	const fetchAllBooks = async () => {

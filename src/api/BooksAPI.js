@@ -19,11 +19,11 @@ export class BooksAPI {
 		var response = null
 
 		try {
-			await this.fetchResource("/books")
+			response = await this.fetchResource("/books")
 		} catch(err) {
-			const response = err.response
-			const errClass = response ? APIError : Error
-			throw new errClass(`Failed to fetch all books. Error Message: ${err.message}`, response)
+			let errResponse = err.response
+			let errClass = errResponse ? APIError : Error
+			throw new errClass(`Failed to fetch all books. Error Message: ${err.message}`, errResponse)
 		}
 
 		const json = await response.json()
@@ -38,8 +38,8 @@ export class BooksAPI {
 		try {
 			response = await this.fetchResource(`/books/${id}`)
 		} catch(err) {
-			const response = err.response
-			const errClass = response ? APIError : Error
+			let errResponse = err.response
+			let errClass = errResponse ? APIError : Error
 			throw new errClass(`Failed to fetch book. Status: ${err.messsage}`, response)
 		}
 
@@ -54,9 +54,9 @@ export class BooksAPI {
 		try {
 			response = await this.fetchResource(`/books/${id}/purchase`, {method: "POST"})
 		} catch(err) {
-			const response = err.response
-			const errClass = response ? APIError : Error
-			throw new errClass(`Failed to purchase book. Error Message: ${err.message}`, response)
+			let errResponse = err.response
+			let errClass = errResponse ? APIError : Error
+			throw new errClass(`Failed to purchase book. Error Message: ${err.message}`, errResponse)
 		}
 
 		const json = await response.json()

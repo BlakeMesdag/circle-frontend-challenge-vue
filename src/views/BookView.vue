@@ -1,7 +1,7 @@
 <template>
 <Transition name="fade" mode="out-in">
-  <div class="container border rounded-2" v-if="book.title">
-    <div class="row p-2">
+  <div class="container p-3" v-if="book.title">
+    <div class="row border rounded-2 p-2">
       <div class="col-4 text-bg-secondary rounded-2">
         <img style="min-height: 200px; height: 200px" />
       </div>
