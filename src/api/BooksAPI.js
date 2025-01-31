@@ -16,15 +16,52 @@ export class BooksAPI {
 	}
 
 	async fetchAllBooks() {
-		await this.fetchResource("/books")
+		var response = null
+
+		try {
+			await this.fetchResource("/books")
+		} catch(err) {
+			const response = err.response
+			const errClass = response ? APIError : Error
+			throw new errClass(`Failed to fetch all books. Error Message: ${err.message}`, response)
+		}
+
+		const json = await response.json()
+		const books = json.books
+
+		return books ? books : null
 	}
 
 	async fetchBook(id) {
-		await this.fetchResource(`/books/${id}`)
+		var response = null
+
+		try {
+			response = await this.fetchResource(`/books/${id}`)
+		} catch(err) {
+			const response = err.response
+			const errClass = response ? APIError : Error
+			throw new errClass(`Failed to fetch book. Status: ${err.messsage}`, response)
+		}
+
+		const json = await response.json()
+
+		return json.book ? json.book : null
 	}
 
 	async purchaseBook(id) {
-		await this.fetchResource(`/books/${id}/purchase`, {method: "POST"})
+		var response = null
+
+		try {
+			response = await this.fetchResource(`/books/${id}/purchase`, {method: "POST"})
+		} catch(err) {
+			const response = err.response
+			const errClass = response ? APIError : Error
+			throw new errClass(`Failed to purchase book. Error Message: ${err.message}`, response)
+		}
+
+		const json = await response.json()
+
+		return json.book ? json.book : null
 	}
 
 	async fetchResource(path, options = {}) {
@@ -34,7 +71,6 @@ export class BooksAPI {
 			throw new APIError(response.text(), response)
 		}
 
-		const json = await response.json()
-		return json
+		return response
 	}
 }

@@ -5,11 +5,11 @@ import {BooksAPI} from '@/api/BooksAPI'
 export const useBooksStore = defineStore('books', () => {
 	const books = ref([])
 	const booksAPI = new BooksAPI('http://localhost:8000')
+	const currentBook = ref(null)
+	const purchasing = ref(false)
 
-	const cachedBooks = localStorage.getItem('books')
-
-	if(cachedBooks) {
-		books.value = JSON.parse(cachedBooks)
+	if(localStorage.getItem('books')) {
+		books.value = JSON.parse(localStorage.getItem('books'))
 	}
 
 	watch(books, (newBooks) => {
@@ -24,10 +24,19 @@ export const useBooksStore = defineStore('books', () => {
 		return books.value.find((b) => { return b['id'] == id })
 	}
 
-	const fetchAllBooks = async () => {
-		const response = await booksAPI.fetchAllBooks()
+	const updateExistingBook = (book) => {
+		const idx = books.value.findIndex((b) => b.id == book.id)
 
-		books.value = response.books
+		books.value[idx] = book
+		currentBook.value = book
+	}
+
+	const fetchAllBooks = async () => {
+		const books = await booksAPI.fetchAllBooks()
+
+		books.value = books
+
+		return books
 	}
 
 	const fetchBook = async (id) => {
@@ -37,31 +46,26 @@ export const useBooksStore = defineStore('books', () => {
 			return existing
 		}
 
-		const response = await booksAPI.fetchBook(id)
+		const book = await booksAPI.fetchBook(id)
+		updateExistingBook(book)
 
-		return response.book
+		return book
 	}
 
 	const purchaseBook = async (id) => {
-		let response = null
+		const book = await booksAPI.purchaseBook(id)
 
-		try {
-			response = await booksAPI.purchaseBook(id)
-		} catch(err) {
-			if(err.name == "APIError") {
-				response = err.response
-			}
+		updateExistingBook(book)
+		currentBook.value = book
 
-			console.log(`Purchase book failed! ${err.message}`)
-
-			return
-		}
-
-		return response.book
+		return book
 	}
 
 	return {
 		books,
+		booksAPI,
+		currentBook,
+		purchasing,
 		fetchAllBooks,
 		fetchBook,
 		purchaseBook,

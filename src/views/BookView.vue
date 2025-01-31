@@ -69,17 +69,16 @@ const available = computed(() => {
   return book.value.availableStock > 0
 })
 
-const purchaseBook = () => {
+const purchaseBook = async () => {
   if(purchasing.value) { return }
 
   purchasing.value = true
 
-  booksStore.purchaseBook(book.value.id)
-    .then((b) => {
-      if(b) {
-        book.value = b
-      }
-    })
+  try {
+    book.value = await booksStore.purchaseBook(book.value.id)
+  } catch(err) {
+    console.log(`Error purchasing book! ${err.message}`, err)
+  }
 
   setTimeout(() => {
     purchasing.value = false
