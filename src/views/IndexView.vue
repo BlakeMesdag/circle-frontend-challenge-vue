@@ -12,8 +12,6 @@
 import {useBooksStore} from '@/stores/BooksStore'
 
 const store = useBooksStore()
-
-store.fetchAllBooks()
 </script>
 
 <script>

@@ -12,10 +12,19 @@ export const useBooksStore = defineStore('books', () => {
 		books.value = JSON.parse(localStorage.getItem('books'))
 	}
 
-	const storeBooks = (newBooks) => {
+	const storeBook = (book) => {
+		const idx = books.value.findIndex((b) => b.id == book.id) || books.length()
+
+		books.value[idx] = book
+		currentBook.value = book
+
+		cacheBooks(books.value)
+	}
+
+	const cacheBooks = (newBooks) => {
 		localStorage.setItem('books', JSON.stringify(newBooks))
 	}
-	watch(books, storeBooks)
+	watch(books, cacheBooks)
 
 	const findExistingBook = (id) => {
 		if (!books.value) {
@@ -25,13 +34,8 @@ export const useBooksStore = defineStore('books', () => {
 		return books.value.find((b) => { return b['id'] == id })
 	}
 
-	const updateExistingBook = (book) => {
-		const idx = books.value.findIndex((b) => b.id == book.id)
-
-		books.value[idx] = book
-		currentBook.value = book
-
-		storeBooks(books.value)
+	const getCachedOrFetchAllBooks = async () => {
+		return books.value || fetchAllBooks()
 	}
 
 	const fetchAllBooks = async () => {
@@ -43,22 +47,26 @@ export const useBooksStore = defineStore('books', () => {
 	}
 
 	const fetchBook = async (id) => {
+		const book = await booksAPI.fetchBook(id)
+		storeBook(book)
+
+		return book
+	}
+
+	const getCachedOrFetchBook = async (id) => {
 		const existing = findExistingBook(id)
 
 		if(existing) {
 			return existing
 		}
 
-		const book = await booksAPI.fetchBook(id)
-		updateExistingBook(book)
-
-		return book
+		return fetchBook(id)
 	}
 
 	const purchaseBook = async (id) => {
 		const book = await booksAPI.purchaseBook(id)
 
-		updateExistingBook(book)
+		storeBook(book)
 		currentBook.value = book
 
 		return book
@@ -69,8 +77,13 @@ export const useBooksStore = defineStore('books', () => {
 		booksAPI,
 		currentBook,
 		purchasing,
+		cacheBooks,
 		fetchAllBooks,
 		fetchBook,
 		purchaseBook,
+		findExistingBook,
+		getCachedOrFetchBook,
+		getCachedOrFetchAllBooks,
+		storeBook,
 	}
 })

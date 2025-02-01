@@ -85,6 +85,6 @@ const purchaseBook = async () => {
   }, 500)
 }
 
-booksStore.fetchBook(props.id)
+booksStore.getCachedOrFetchBook(props.id)
   .then((b) => {book.value = b})
 </script>
