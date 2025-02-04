@@ -12,14 +12,9 @@
 </template>
 
 <script setup>
-import {defineProps, computed} from 'vue'
+	import {defineProps} from 'vue'
 
-const props = defineProps({
-	'book': Object,
-})
-
-// eslint-disable-next-line no-unused-vars
-const available = computed(() => {
-	return props.book.availableStock > 0
-})
+	defineProps({
+		'book': Object,
+	})
 </script>
