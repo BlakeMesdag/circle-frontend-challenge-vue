@@ -1,6 +1,8 @@
 <template>
 	<div class="card">
-		<img class="card-img-top text-bg-secondary" style="height: 200px" />
+		<div class="card-img-top text-bg-secondary position-relative " style="height: 200px">
+			<i class="bi bi-image position-absolute top-50 translate-middle" style="font-size: 4rem"></i>
+		</div>
 
 		<div class="card-body">
 			<h5 class="text-truncate">

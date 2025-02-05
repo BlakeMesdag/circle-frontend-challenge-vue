@@ -3,7 +3,9 @@
 		<div class="container p-3" v-if="booksStore.currentBook">
 			<div class="row border rounded-2 p-2">
 				<div class="col-4 text-bg-secondary rounded-2">
-					<img style="min-height: 200px; height: 200px" />
+					<div class="card-img-top text-bg-secondary position-relative " style="height: 200px">
+						<i class="bi bi-image position-absolute top-50 translate-middle" style="font-size: 4rem"></i>
+					</div>
 				</div>
 
 				<div class="col-8">
