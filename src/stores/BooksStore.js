@@ -2,11 +2,13 @@ import {defineStore} from 'pinia'
 import {ref, watch, computed} from 'vue'
 import {useRoute} from 'vue-router'
 import {BooksAPI} from '@/api/BooksAPI'
+import {AlertMessages as Alerts} from '@/components/AlertMessages.js'
 
 export const useBooksStore = defineStore('books', () => {
 	const route = useRoute()
 	const books = ref([])
 	const booksAPI = new BooksAPI('http://localhost:8000')
+	const purchasedBooks = ref({})
 	const currentBook = ref({})
 	const purchasing = ref(false)
 
@@ -76,12 +78,17 @@ export const useBooksStore = defineStore('books', () => {
 		try {
 			book = await booksAPI.purchaseBook(id)
 		} catch(err) {
-			console.log(`Error purchasing book! ${err.message}`, err)
+			Alerts.error(`Couldn't purchase book, please try again. ${err.message}`)
 		}
 
 		if(book) {
+			purchasedBooks.value[book.id] ||= {'title': book.title, quantity: 0}
+			purchasedBooks.value[book.id]['quantity'] += 1
+
 			storeBook(book)
 			currentBook.value = book
+
+			Alerts.success(`Purchased a copy of ${book.title}!`)
 		}
 
 		setTimeout(() => {purchasing.value = false}, 500)
@@ -114,6 +121,7 @@ export const useBooksStore = defineStore('books', () => {
 		books,
 		booksAPI,
 		currentBook,
+		purchasedBooks,
 		purchasing,
 		route,
 		cacheBooks,

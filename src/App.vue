@@ -1,25 +1,35 @@
 <template>
 	<div>
-		<NavBar></NavBar>
+		<NavBar />
 
 		<router-view v-slot="{ Component }">
 			<transition name="fade" mode="out-in">
 				<component :is="Component" />
 			</transition>
 		</router-view>
+
+		<div class="fixed-bottom">
+			<div class="mx-2 mb-0">
+				<Alerts />
+			</div>
+		</div>
 	</div>
 </template>
 
-<script>
+<script setup>
+	import {defineProps} from 'vue'
 	import NavBar from '@/components/NavBar.vue'
+	import {AlertMessages as Alerts} from '@/components/AlertMessages.js'
 
-	export default {
-		name: 'App',
-		components: {
-			NavBar,
+	defineProps({
+		name: {
+			type: String,
+			default: 'App',
 		},
-		meta: { transition: 'fade' },
-	}
+		meta: {
+			transition: 'fade',
+		},
+	})
 </script>
 
 <style>

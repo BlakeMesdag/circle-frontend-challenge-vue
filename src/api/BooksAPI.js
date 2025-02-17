@@ -23,7 +23,7 @@ export class BooksAPI {
 		} catch(err) {
 			let errResponse = err.response
 			let errClass = errResponse ? APIError : Error
-			throw new errClass(`Failed to fetch all books. Error Message: ${err.message}`, errResponse)
+			throw new errClass(err.message, errResponse)
 		}
 
 		const json = await response.json()
@@ -40,7 +40,7 @@ export class BooksAPI {
 		} catch(err) {
 			let errResponse = err.response
 			let errClass = errResponse ? APIError : Error
-			throw new errClass(`Failed to fetch book. Status: ${err.messsage}`, response)
+			throw new errClass(err.message, response)
 		}
 
 		const json = await response.json()
@@ -56,7 +56,7 @@ export class BooksAPI {
 		} catch(err) {
 			let errResponse = err.response
 			let errClass = errResponse ? APIError : Error
-			throw new errClass(`Failed to purchase book. Error Message: ${err.message}`, errResponse)
+			throw new errClass(err.message, errResponse)
 		}
 
 		const json = await response.json()
@@ -68,7 +68,8 @@ export class BooksAPI {
 		const response = await fetch(`${this.baseURI}${path}`, options)
 
 		if(response.status < 200 || response.status >= 300) {
-			throw new APIError(response.text(), response)
+			const json = await response.json()
+			throw new APIError(json.message, response)
 		}
 
 		return response
