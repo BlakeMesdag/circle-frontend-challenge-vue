@@ -24,6 +24,10 @@ export const useBooksStore = defineStore('books', () => {
 		cacheBooks(books.value)
 	}
 
+	const storePurchasedBooks = (newPurchasedBooks) => {
+		localStorage.setItem('purchasedBooks', JSON.stringify(newPurchasedBooks.value))
+	}
+
 	const cacheBooks = (newBooks) => {
 		if(newBooks.length > 0) {
 			localStorage.setItem('books', JSON.stringify(newBooks))
@@ -117,6 +121,11 @@ export const useBooksStore = defineStore('books', () => {
 		currentBook.value = await getCachedOrFetchBook(newId)
 	})
 
+	if(localStorage.getItem('purchasedBooks')) {
+		purchasedBooks.value = JSON.parse(localStorage.getItem('purchasedBooks'))
+	}
+	watch(() => purchasedBooks, storePurchasedBooks, {deep: true})
+
 	return {
 		books,
 		booksAPI,
@@ -133,5 +142,6 @@ export const useBooksStore = defineStore('books', () => {
 		getCachedOrFetchBook,
 		getCachedOrFetchAllBooks,
 		storeBook,
+		storePurchasedBooks,
 	}
 })
