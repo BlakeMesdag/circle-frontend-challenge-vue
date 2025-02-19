@@ -16,7 +16,6 @@ import BookView from './views/BookView.vue'
 const routes = [
 	{
 		path: '/',
-		component: App,
 		children: [
 			{
 				path: '',
@@ -26,7 +25,6 @@ const routes = [
 	},
 	{
 		path: '/books/:id',
-		component: App,
 		props: true,
 		children: [
 			{

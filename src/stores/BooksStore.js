@@ -6,8 +6,9 @@ import {AlertMessages as Alerts} from '@/components/AlertMessages.js'
 
 export const useBooksStore = defineStore('books', () => {
 	const route = useRoute()
+	const baseURI = ref('http://localhost:8000')
 	const books = ref([])
-	const booksAPI = new BooksAPI('http://localhost:8000')
+	const booksAPI = new BooksAPI(baseURI.value)
 	const purchasedBooks = ref({})
 	const currentBook = ref({})
 	const purchasing = ref(false)
@@ -104,29 +105,49 @@ export const useBooksStore = defineStore('books', () => {
 		return currentBook.value.availableStock > 0
 	})
 
-	if(localStorage.getItem('books')) {
-		books.value = JSON.parse(localStorage.getItem('books'))
-	} else {
-		fetchAllBooks().then((newBooks) => {books.value = newBooks})
+	const setupStore = () => {
+		if(localStorage.getItem('books')) {
+			books.value = JSON.parse(localStorage.getItem('books'))
+		} else {
+			fetchAllBooks().then((newBooks) => {books.value = newBooks})
+		}
+
+		if(route.params.id) {
+			getCachedOrFetchBook(route.params.id).then((book) => currentBook.value = book)
+		}
+
+		if(localStorage.getItem('purchasedBooks')) {
+			purchasedBooks.value = JSON.parse(localStorage.getItem('purchasedBooks'))
+		}
+
+		if(localStorage.getItem('bookstoreURI')) {
+			baseURI.value = localStorage.getItem('bookstoreURI')
+			booksAPI.setBaseURI(baseURI.value)
+		}
 	}
-	watch(books, cacheBooks)
 
-	if(route.params.id) {
-		getCachedOrFetchBook(route.params.id).then((book) => currentBook.value = book)
+	const setupWatchers = () => {
+		watch(books, cacheBooks)
+
+		watch(() => route.params.id, async (newId) => {
+			if(!newId) { return }
+
+			currentBook.value = await getCachedOrFetchBook(newId)
+		})
+
+		watch(() => purchasedBooks, storePurchasedBooks, {deep: true})
+
+		watch(baseURI, (newBaseURI) => {
+			localStorage.setItem('bookstoreURI', newBaseURI)
+			booksAPI.setBaseURI(newBaseURI)
+		})
 	}
 
-	watch(() => route.params.id, async (newId) => {
-		if(!newId) { return }
-
-		currentBook.value = await getCachedOrFetchBook(newId)
-	})
-
-	if(localStorage.getItem('purchasedBooks')) {
-		purchasedBooks.value = JSON.parse(localStorage.getItem('purchasedBooks'))
-	}
-	watch(() => purchasedBooks, storePurchasedBooks, {deep: true})
+	setupStore()
+	setupWatchers()
 
 	return {
+		baseURI,
 		books,
 		booksAPI,
 		currentBook,
@@ -141,6 +162,8 @@ export const useBooksStore = defineStore('books', () => {
 		findExistingBook,
 		getCachedOrFetchBook,
 		getCachedOrFetchAllBooks,
+		setupStore,
+		setupWatchers,
 		storeBook,
 		storePurchasedBooks,
 	}

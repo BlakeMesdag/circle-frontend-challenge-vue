@@ -15,6 +15,10 @@ export class BooksAPI {
 		}
 	}
 
+	setBaseURI(newBaseURI) {
+		this.baseURI = newBaseURI
+	}
+
 	async fetchAllBooks() {
 		var response = null
 
