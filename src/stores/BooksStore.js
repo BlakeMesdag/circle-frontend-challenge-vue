@@ -52,7 +52,14 @@ export const useBooksStore = defineStore('books', () => {
 	}
 
 	const fetchAllBooks = async () => {
-		const books = await booksAPI.fetchAllBooks()
+		var books = null
+
+		try {
+			books = await booksAPI.fetchAllBooks()
+		} catch(err) {
+			Alerts.error(`Couldn't fetch books: ${err.message}`)
+			return []
+		}
 
 		books.value = books
 
