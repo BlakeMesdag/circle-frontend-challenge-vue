@@ -6,7 +6,7 @@ import {AlertMessages as Alerts} from '@/components/AlertMessages.js'
 
 export const useBooksStore = defineStore('books', () => {
 	const route = useRoute()
-	const baseURI = ref('http://localhost:8000')
+	const baseURI = ref("https://sky-high-books-backend-604a7039b5db.herokuapp.com")
 	const books = ref([])
 	const booksAPI = new BooksAPI(baseURI.value)
 	const purchasedBooks = ref({})
